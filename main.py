@@ -1,48 +1,46 @@
-import random
+stock_prices = {
+    "AAPL": 180,
+    "TSLA": 250,
+    "GOOGL": 170,
+    "MSFT": 420,
+    "AMZN": 190
+}
 
-words = ["python", "computer", "programming", "database", "developer"]
+print("=== STOCK PORTFOLIO TRACKER ===")
+print("Available stocks:", ", ".join(stock_prices.keys()))
 
-word = random.choice(words)
-guessed_letters = []
-wrong_guesses = 0
-max_wrong_guesses = 6
+total_investment = 0
 
-print("=== HANGMAN GAME ===")
-print("Guess the word one letter at a time.")
+while True:
+    stock = input("\nEnter stock name (or type 'done' to finish): ").upper()
 
-while wrong_guesses < max_wrong_guesses:
-    display = ""
-    for letter in word:
-        if letter in guessed_letters:
-            display += letter + " "
-        else:
-            display += "_ "
-
-    print("\nWord:", display)
-    print("Wrong guesses:", wrong_guesses, "/", max_wrong_guesses)
-
-    if all(letter in guessed_letters for letter in word):
-        print("Congratulations! You guessed the word:", word)
+    if stock == "DONE":
         break
 
-    guess = input("Enter a letter: ").lower()
-
-    if len(guess) != 1 or not guess.isalpha():
-        print("Please enter one letter only.")
+    if stock not in stock_prices:
+        print("Stock not available. Please choose from the listed stocks.")
         continue
 
-    if guess in guessed_letters:
-        print("You already guessed this letter.")
-        continue
+    try:
+        quantity = int(input("Enter quantity: "))
 
-    guessed_letters.append(guess)
+        if quantity <= 0:
+            print("Quantity must be greater than 0.")
+            continue
 
-    if guess in word:
-        print("Correct guess!")
-    else:
-        wrong_guesses += 1
-        print("Wrong guess!")
+        investment = stock_prices[stock] * quantity
+        total_investment += investment
 
-else:
-    print("\nGame Over!")
-    print("The word was:", word)
+        print("Stock price:", stock_prices[stock])
+        print("Investment for", stock, ":", investment)
+
+    except ValueError:
+        print("Please enter a valid whole number.")
+
+print("\nTotal Investment Value:", total_investment)
+
+with open("portfolio_result.txt", "w") as file:
+    file.write("Stock Portfolio Tracker\n")
+    file.write("Total Investment Value: " + str(total_investment))
+
+print("Result saved in portfolio_result.txt")
